@@ -54,4 +54,5 @@ jobs:
         run: terraform plan
 
       - name: Run Terraform Command
-        run: terraform ${{ github.event.inputs.command }}
+        run: terraform ${{ github.event.inputs.command }} -auto-approve -var="newrelic_api_key=${{ secrets.NEWRELIC_API_KEY }}"
+
