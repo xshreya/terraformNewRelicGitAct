@@ -1,58 +1,42 @@
-name: worflow to apply the plan
+name: Workflow to apply the plan
 on:
   workflow_dispatch:
-      inputs:
-        command:
-          description: 'Terraform command to run'
-          required: true
-          default: 'apply'
-          type: choice
-          options:
-            - apply
-            - destroy
-# env:
-#     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#     # TF_ACTION_WORKING_DIR: "terraform"
-#     AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-#     AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    inputs:
+      command:
+        description: 'Terraform command to run'
+        required: true
+        default: 'apply'
+        type: choice
+        options:
+          - apply
+          - destroy
+
 jobs:
-  terraform_init:
+  terraform:
     name: Applying the plan
     runs-on: ubuntu-latest
     defaults:
-        run:
-          shell: bash
-          working-directory: ./
+      run:
+        shell: bash
+        working-directory: ./
+    env:
+      NEWRELIC_API_KEY: ${{ secrets.NEWRELIC_API_KEY }} # Setting environment variable at the job level
+
     steps:
       - name: Checkout Repo
         uses: actions/checkout@v4
 
-      - name: setup-terraform
+      - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
         with:
-            terraform_version: 1.7.5
+          terraform_version: 1.7.5
 
       - name: Terraform Init
         id: init
         run: terraform init -upgrade
-        env:
-          NEWRELIC_API_KEY: ${{ secrets.NEWRELIC_API_KEY }}
-
-    #     # Run a terraform fmt to check syntax
-    #   - name: Terraform Format
-    #     id: fmt
-    #     run: terraform fmt -check
-
-    #     # Run a terraform validate
-    #   - name: Terraform Validate
-    #     id: validate
-    # # Run even if formatting fails
-    #     if: success() || failure()
-    #     run: terraform validate -no-color
 
       - name: Terraform Plan
-        run: terraform plan -var="newrelic_api_key=${{ secrets.NEWRELIC_API_KEY }}"
+        run: terraform plan -var="newrelic_api_key=${{ env.NEWRELIC_API_KEY }}"
 
       - name: Run Terraform Command
-        run: terraform ${{ github.event.inputs.command }} -auto-approve -var="newrelic_api_key=${{ secrets.NEWRELIC_API_KEY }}"
-
+        run: terraform ${{ github.event.inputs.command }} -auto-approve -var="newrelic_api_key=${{ env.NEWRELIC_API_KEY }}"
