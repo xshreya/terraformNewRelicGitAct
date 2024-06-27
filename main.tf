@@ -2,6 +2,7 @@
 module "alertPolicy" {
   source = "./alertPolicy"
   incident_preference = "PER_POLICY"
+  newrelic_api_key = var.newrelic_api_key
 }
 
 
