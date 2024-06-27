@@ -51,7 +51,7 @@ jobs:
     #     run: terraform validate -no-color
 
       - name: Terraform Plan
-        run: terraform plan
+        run: terraform plan -var="newrelic_api_key=${{ secrets.NEWRELIC_API_KEY }}"
 
       - name: Run Terraform Command
         run: terraform ${{ github.event.inputs.command }} -auto-approve -var="newrelic_api_key=${{ secrets.NEWRELIC_API_KEY }}"
