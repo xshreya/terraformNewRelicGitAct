@@ -34,7 +34,7 @@ jobs:
 
       - name: Terraform Init
         id: init
-        run: terraform init
+        run: terraform init -upgrade
         env:
           NEWRELIC_API_KEY: ${{ secrets.NEWRELIC_API_KEY }}
 
