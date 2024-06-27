@@ -7,5 +7,5 @@ module "alertPolicy" {
 
 module "newrelic_nrql_alert_condition" {
   source = "./newRelicAlertCondition"
-  policy_id  = module.alert_policy.policy
+  policy_id  = module.alertPolicy.policy
 }
